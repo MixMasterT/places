@@ -1,6 +1,12 @@
 <template>
-  <div class="hello">
+  <div class="places">
     <h1>{{ msg }}</h1>
+    <div class="search-box">
+      <input class="search-term" type="text" v-model="searchTerm" />
+      <button class="search-icon" @click="runSearch">Find</button>
+      <button class="search-icon" @click="runNearbySearch">Near By</button>
+    </div>
+    <SearchResults />
     <p>
       For a guide and recipes on how to configure / customize this project,<br>
       check out the
@@ -32,11 +38,36 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+import SearchResults from './SearchResults';
+
 export default {
-  name: 'HelloWorld',
+  name: 'Places',
   props: {
     msg: String
-  }
+  },
+  components: {
+    SearchResults,
+  },
+  data() {
+    return {
+      searchTerm: '',
+    }
+  },
+  methods: {
+    runSearch() {
+      console.log('search running: ', this.searchTerm);
+      this.fetchSearchResults(this.searchTerm);
+    },
+    runNearbySearch() {
+      console.log('search running: ', this.searchTerm);
+      this.fetchNearbySearchResults(this.searchTerm);
+    },
+    ...mapActions([
+      'fetchSearchResults',
+      'fetchNearbySearchResults',
+    ])
+  },
 }
 </script>
 
@@ -55,5 +86,32 @@ li {
 }
 a {
   color: #42b983;
+}
+.search-box {
+  width: 100%;
+  input {
+    width: 50%;
+    min-width: 25rem;
+    height: 10%;
+    min-height: 2rem;
+    font-size: 1.6rem;
+
+  }
+  .search-icon {
+    padding: 0.5rem;
+    background-color: #EFEFEF;
+    cursor: pointer;
+    border-radius: 18%;
+  }
+  .search-icon:hover {
+    background-color: #DEEFDE;
+  }
+  .search-icon:active {
+    background-color: #CDEFCD;
+  }
+  .search-icon::after {
+    font-size: 1.4rem;
+    content: "\1F50D";
+  }
 }
 </style>
