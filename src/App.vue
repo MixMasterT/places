@@ -34,5 +34,6 @@ export default {
   margin-top: 60px;
   width: 100vw;
   height: 100vh;
+  box-sizing: border-box;
 }
 </style>

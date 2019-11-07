@@ -9,18 +9,23 @@ export default new Vuex.Store({
     urlRoot: 'http://localhost:8080',
     currentLocation: null,
     searchResults: [],
-    nearbySearchResults: [],
     favoritePlaces: [],
   },
   mutations: {
     replaceSearchResults(state, newResults) {
       state.searchResults = newResults;
     },
-    replaceNearbySearchResults(state, newResults) {
-      state.nearbySearchResults = newResults;
-    },
     setLocation(state, loc) {
       state.currentLocation = loc;
+    },
+    addFavoritePlace(state, place) {
+      state.favoritePlaces = [...state.favoritePlaces, place];
+    },
+    removeSearchResult(state, idxToRemove) {
+      state.searchResults = [
+        ...state.searchResults.slice(0, idxToRemove),
+        ...state.searchResults.slice(idxToRemove + 1)
+      ]
     }
   },
   actions: {
@@ -33,11 +38,11 @@ export default new Vuex.Store({
         commit('setLocation', { latitude, longitude });
       });
     },
-    async fetchSearchResults({ commit, state }, term) {
+    async fetchFavoriteDetails({ commit, state }, place) {
       const paramsObj = {
-        input: term,
+        place_id: place.place_id,
         inputtype: 'textquery',
-        fields: 'photos,formatted_address,name,rating,opening_hours,geometry',
+        fields: 'photo,formatted_address,name,rating,opening_hours,website',
         key: state.apiKey,
       };
       const params = Object.keys(paramsObj)
@@ -45,8 +50,8 @@ export default new Vuex.Store({
         .join('&');
       let res;
       try {
-        const url = `${state.urlRoot}/findplacefromtext/json?${params}`;
-        console.log('request url: ', url);
+        const url = `${state.urlRoot}/details/json?${params}`;
+        console.log('details request url: ', url);
         res = await fetch(url, {
           method: 'GET',
           mode: 'cors',
@@ -55,18 +60,15 @@ export default new Vuex.Store({
         console.log('Error: ', e);
       }
       try {
-        console.log('res: ', res);
+        console.log('details res: ', res);
         const data = await res.json();
         console.log('data: ', data);
-        commit('replaceSearchResults', data.candidates);
+        commit('addFavoritePlace', data.result);
       } catch(error) {
         console.log('error parsing json: ', error);
       }
     },
-    clearSearchResults({ commit }) {
-      commit('replaceSearchResults', []);
-    },
-    async fetchNearbySearchResults({ commit, state }, keyword, type) {
+    async fetchSearchResults({ commit, state }, keyword, type) {
       const { latitude, longitude } = state.currentLocation;
       const paramsObj = {
         keyword,
@@ -92,13 +94,16 @@ export default new Vuex.Store({
         console.log('res: ', res);
         const data = await res.json();
         console.log('data: ', data);
-        commit('replaceNearbySearchResults', data.results);
+        commit('replaceSearchResults', data.results);
       } catch(error) {
         console.log('error parsing json: ', error);
       }
     },
-    clearNearbySearchResults({ commit }) {
-      commit('replaceNearbySearchResults', []);
+    clearSearchResults({ commit }) {
+      commit('replaceSearchResults', []);
+    },
+    dismissSearchResult({commit}, idxToRemove) {
+      commit('removeSearchResult', idxToRemove);
     }
   },
   modules: {
