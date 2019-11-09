@@ -30,11 +30,9 @@ export default new Vuex.Store({
   },
   actions: {
     getCurrentLocation({ commit }) {
-      console.log('location getting got...');
       let location;
       navigator.geolocation.getCurrentPosition(function(position) {
         const { latitude, longitude } = position.coords;
-        console.log(`lat: ${latitude}, long: ${longitude}`);
         commit('setLocation', { latitude, longitude });
       });
     },
@@ -51,21 +49,18 @@ export default new Vuex.Store({
       let res;
       try {
         const url = `${state.urlRoot}/details/json?${params}`;
-        console.log('details request url: ', url);
         res = await fetch(url, {
           method: 'GET',
           mode: 'cors',
         });
       } catch(e) {
-        console.log('Error: ', e);
+        console.log('Error fetching favoirte details: ', e);
       }
       try {
-        console.log('details res: ', res);
         const data = await res.json();
-        console.log('data: ', data);
         commit('addFavoritePlace', data.result);
       } catch(error) {
-        console.log('error parsing json: ', error);
+        console.log('error parsing json from details fetch: ', error);
       }
     },
     async fetchSearchResults({ commit, state }, keyword, type) {
@@ -82,21 +77,18 @@ export default new Vuex.Store({
       let res;
       try {
         const url = `${state.urlRoot}/nearbysearch/json?${params}`;
-        console.log('request url: ', url);
         res = await fetch(url, {
           method: 'GET',
           mode: 'cors',
         });
       } catch(e) {
-        console.log('Error: ', e);
+        console.log('Error fetching searchResults: ', e);
       }
       try {
-        console.log('res: ', res);
         const data = await res.json();
-        console.log('data: ', data);
         commit('replaceSearchResults', data.results);
       } catch(error) {
-        console.log('error parsing json: ', error);
+        console.log('Error parsing json from searchResults: ', error);
       }
     },
     clearSearchResults({ commit }) {
@@ -106,6 +98,4 @@ export default new Vuex.Store({
       commit('removeSearchResult', idxToRemove);
     }
   },
-  modules: {
-  }
-})
+});
