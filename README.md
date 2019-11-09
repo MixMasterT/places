@@ -3,16 +3,16 @@
 This project was bootstrapped with the [Vue cli](https://cli.vuejs.org).
 
 ## Project setup
-1. Clone or fork this repo.
-1. Get a google [places api key](https://developers.google.com/places/web-service/get-api-key).
-1. create a `.env` or `.env.local` file in the cloned root directory.
-1. Set VUE_APP_MAPS_API_KEY=yourApiKey;
-  Your .env file should look something like this:
-  ```
-  VUE_APP_MAPS_API_KEY=101010101010101010101010101
-  ```
-1. Run `yarn install` or `npm install` inside the directory.
-1. Then run `yarn serve` or `npm run serve` and open a browser to `localhost:8080`
+1.  Clone or fork this repo.
+1.  Get a google [places api key](https://developers.google.com/places/web-service/get-api-key).
+1.  Create a `.env` or `.env.local` file in the cloned root directory.
+1.  Set VUE_APP_MAPS_API_KEY=yourApiKey;
+    Your .env file should look something like this:
+    ```
+    VUE_APP_MAPS_API_KEY=101010101010101010101010101
+    ```
+1.  Run `yarn install` or `npm install` inside the directory.
+1.  Then run `yarn serve` or `npm run serve` and open a browser to `localhost:8080`
 
 ### To Compile and minify for production
 ```
